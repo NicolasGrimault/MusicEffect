@@ -53,21 +53,5 @@ def transform_file():
             return send_from_directory(app.config['UPLOAD_FOLDER'],filename, as_attachment=True)
         except Exception as e:
             return str(e)
-        
-    
-@app.route('/Form', methods=['GET'])
-def return_form():
-    return '''
-    <!doctype html>
-    <title>Upload new File</title>
-    <h1>Upload new File</h1>
-    <form action="/" method=post enctype=multipart/form-data>
-      reverb
-      <input type=checkbox name=reverb>
-      echo
-      <input type=checkbox name=echo>
-      <input type=file name=file>
-      <input type=submit value=Upload>
-    </form>'''
 
 app.run()
