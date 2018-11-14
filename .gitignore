@@ -23,3 +23,4 @@ obj/**
 tmp/**
 .python-version
 .vs/
+WorkingDirectory/**
