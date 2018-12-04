@@ -1,6 +1,7 @@
 import os
 import sox
 import transformerService
+import uuid
 from flask import Flask, flash, request, redirect, url_for, send_from_directory, after_this_request
 from werkzeug.utils import secure_filename
 from flasgger import Swagger, swag_from
@@ -12,6 +13,10 @@ app = Flask(__name__)
 swagger = Swagger(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
+
+def prepareWorkingDirectory():
+    if not os.path.exists(app.config['UPLOAD_FOLDER']):
+        os.mkdir(app.config['UPLOAD_FOLDER'])
 
 def allowed_file(filename):
     return '.' in filename and \
@@ -32,7 +37,8 @@ def transform_file():
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        inputfilepath = os.path.join(app.config['UPLOAD_FOLDER'], 'inputFile.mp3')
+        prepareWorkingDirectory()
+        inputfilepath = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4())+'.mp3')
         file.save(inputfilepath)    
 
         #Transformation
