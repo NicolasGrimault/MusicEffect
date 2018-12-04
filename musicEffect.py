@@ -1,7 +1,7 @@
 import os
 import sox
-import transformerService
 import uuid
+import transformerService
 from flask import Flask, flash, request, redirect, url_for, send_from_directory, after_this_request
 from werkzeug.utils import secure_filename
 from flasgger import Swagger, swag_from
@@ -14,13 +14,16 @@ swagger = Swagger(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
-def prepareWorkingDirectory():
+def prepare_working_directory():
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.mkdir(app.config['UPLOAD_FOLDER'])
 
 def allowed_file(filename):
     return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+           get_extension(filename) in ALLOWED_EXTENSIONS
+
+def get_extension(filename):
+    return filename.rsplit('.', 1)[1].lower()
 
 @app.route('/', methods=['POST'])
 @swag_from('effect.yml')
@@ -37,27 +40,30 @@ def transform_file():
         return redirect(request.url)
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
-        prepareWorkingDirectory()
-        inputfilepath = os.path.join(app.config['UPLOAD_FOLDER'], str(uuid.uuid4())+'.mp3')
-        file.save(inputfilepath)    
+        prepare_working_directory()
+        
+        inputfilename = str(uuid.uuid4()) + "." + get_extension(filename)
+        outputfilename = str(uuid.uuid4()) + "." + get_extension(filename)
+        inputfilepath = os.path.join(app.config['UPLOAD_FOLDER'], inputfilename)
+        outputfilepath = os.path.join(app.config['UPLOAD_FOLDER'], outputfilename)
 
+        file.save(inputfilepath)    
         #Transformation
         tfm = transformerService.getTransformer(request)
 
-        filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        tfm.build(inputfilepath,filepath)
+        tfm.build(inputfilepath,outputfilepath)
         
         @after_this_request
         def remove_file(response):
             try:
                 os.remove(inputfilepath)
-                #Can't remove the file because it's open, should work on linux server
-                os.remove(filepath)
+                #Can't remove the second file because it's open, should work on linux os
+                os.remove(outputfilepath)
             except Exception as error:
                 app.logger.error("Error removing or closing downloaded file handle", error)
             return response      
         try:
-            return send_from_directory(app.config['UPLOAD_FOLDER'],filename, as_attachment=True)
+            return send_from_directory(app.config['UPLOAD_FOLDER'],filename, as_attachment=True, attachment_filename = filename)
         except Exception as e:
             return str(e)
 
