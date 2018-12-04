@@ -16,6 +16,8 @@ To install flask and Pysox :
 
     pip install flask
     pip install sox 
+    pip install -U setuptools
+    pip install flasgger
 
 To clone and run the project:
 
