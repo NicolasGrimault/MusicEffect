@@ -3,11 +3,13 @@ import sox
 import transformerService
 from flask import Flask, flash, request, redirect, url_for, send_from_directory, after_this_request
 from werkzeug.utils import secure_filename
+from flasgger import Swagger, swag_from
 
 UPLOAD_FOLDER = './WorkingDirectory/'
 ALLOWED_EXTENSIONS = set(['mp3', 'wav'])
 
 app = Flask(__name__)
+swagger = Swagger(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024
 
@@ -16,6 +18,7 @@ def allowed_file(filename):
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route('/', methods=['POST'])
+@swag_from('effect.yml')
 def transform_file():
     # check if the post request has the file part
     if 'file' not in request.files:

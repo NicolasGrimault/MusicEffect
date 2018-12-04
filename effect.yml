@@ -1,0 +1,76 @@
+Apply some music effect on a file
+---
+consumes:
+  - multipart/form-data
+parameters:
+  - in: formData
+    name: file
+    type: file
+    description: An audio file.
+    required: true
+    
+  - in: formData
+    name: speed
+    type: boolean 
+    description: apply speed effect.
+  - in: formData
+    name: speed_factor
+    type: float 
+    description: set speed factor.
+    default: 1
+
+  - in: formData
+    name: reverb
+    type: boolean 
+    description: apply reverb effect.
+  - in: formData
+    name: reverb_high_freq_damping
+    type: float 
+    default: 50
+  - in: formData
+    name: reverb_room_scale
+    type: float 
+    default: 100
+  - in: formData
+    name: reverb_reverberance
+    type: float 
+    default: 50
+
+  - in: formData
+    name: echo
+    type: boolean 
+    description: apply echo effect.
+  - in: formData
+    name: echo_gain_in
+    type: float 
+    default: 0.8
+  - in: formData
+    name: echo_gain_out
+    type: float 
+    default: 0.9
+
+  - in: formData
+    name: reverse
+    type: boolean 
+    description: apply reverse effect.
+
+  - in: formData
+    name: chorus
+    type: boolean 
+    description: apply chorus effect.
+  - in: formData
+    name: chorus_gain_in
+    type: float 
+    default: 0.3
+  - in: formData
+    name: chorus_gain_out
+    type: float 
+    default: 0.8
+  - in: formData
+    name: chorus_n_voices
+    type: integer 
+    default: 3
+responses:
+  200:
+    description: A new audio file
+    type: file
