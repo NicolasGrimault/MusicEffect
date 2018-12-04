@@ -63,7 +63,7 @@ def transform_file():
                 app.logger.error("Error removing or closing downloaded file handle", error)
             return response      
         try:
-            return send_from_directory(app.config['UPLOAD_FOLDER'],filename, as_attachment=True, attachment_filename = filename)
+            return send_from_directory(app.config['UPLOAD_FOLDER'],outputfilename, as_attachment=True, attachment_filename = filename)
         except Exception as e:
             return str(e)
 
