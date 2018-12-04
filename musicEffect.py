@@ -43,7 +43,7 @@ def transform_file():
             try:
                 os.remove(inputfilepath)
                 #Can't remove the file because it's open, should work on linux server
-                #os.remove(filepath)
+                os.remove(filepath)
             except Exception as error:
                 app.logger.error("Error removing or closing downloaded file handle", error)
             return response      
