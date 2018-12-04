@@ -1,5 +1,6 @@
 import os
 import sox
+import transformerService
 from flask import Flask, flash, request, redirect, url_for, send_from_directory, after_this_request
 from werkzeug.utils import secure_filename
 
@@ -32,11 +33,8 @@ def transform_file():
         file.save(inputfilepath)    
 
         #Transformation
-        tfm = sox.Transformer()
-        if request.form.getlist('reverb'):
-            tfm.reverb()
-        if request.form.getlist('echo'):   
-            tfm.echo()
+        tfm = transformerService.getTransformer(request)
+
         filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
         tfm.build(inputfilepath,filepath)
         
