@@ -3,7 +3,8 @@ import sox
 REVERB = "reverb"
 ECHO = "echo"
 CHORUS = "chorus"
-
+REVERSE = "reverse"
+SPEED = "speed"
 
 def getTransformer(request):
     tfm = sox.Transformer()
@@ -25,5 +26,10 @@ def getTransformer(request):
         gou = float(request.form.get(CHORUS + '_gain_out', 0.8))
         nvo = int(request.form.get(CHORUS + '_n_voices', 3))
         tfm.chorus(gain_in=gin, gain_out=gou, n_voices=nvo)
+    if request.form.getlist(REVERSE):
+        tfm.reverse()
+    if request.form.getlist(SPEED):
+        fac = float(request.form.get(SPEED + '_factor', 1))
+        tfm.speed(factor=fac)
 
     return tfm
